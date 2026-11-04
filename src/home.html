@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFLiga - Início</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>IFLiga</h1>
+
+        <nav>
+            <a href="home.html" class="active">Início</a>
+            <a href="/ligas">Ligas</a>
+            <a href="/times">Times</a>
+            <a href="/jogadores">Jogadores</a>
+            <a href="/partidas">Partidas</a>
+        </nav>
+
+        <button id="themeToggle">Modo claro</button>
+    </header>
+
+    <main>
+
+        <section class="welcome">
+            <h2>Bem-vindo ao IFLiga!</h2>
+            <p>Organize ligas, times, jogadores e acompanhe as partidas.</p>
+            <a href="ligas.html" class="main-button">Explorar ligas</a>
+        </section>
+
+        <section class="section">
+            <h2>Visão geral</h2>
+            <p>Dados cadastrados no sistema:</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p>Ligas cadastradas</p>
+                    <h3>0</h3>
+                </div>
+
+                <div class="stat-card">
+                    <p>Times cadastrados</p>
+                    <h3>0</h3>
+                </div>
+
+                <div class="stat-card">
+                    <p>Jogadores cadastrados</p>
+                    <h3>0</h3>
+                </div>
+
+                <div class="stat-card">
+                    <p>Partidas realizadas</p>
+                    <h3>0</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Acesso rápido</h2>
+
+            <div class="actions-grid">
+                <a href="ligas.html" class="action-card">
+                    <h3>Ligas</h3>
+                    <p>Cadastre e organize competições.</p>
+                    <small>Acessar</small>
+                </a>
+
+                <a href="times.html" class="action-card">
+                    <h3>Times</h3>
+                    <p>Cadastre as equipes.</p>
+                    <small>Acessar</small>
+                </a>
+
+                <a href="jogadores.html" class="action-card">
+                    <h3>Jogadores</h3>
+                    <p>Gerencie os jogadores.</p>
+                    <small>Acessar</small>
+                </a>
+
+                <a href="partidas.html" class="action-card">
+                    <h3>Partidas</h3>
+                    <p>Registre os resultados.</p>
+                    <small>Acessar</small>
+                </a>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Sistema de pontuação</h2>
+
+            <div class="points-grid">
+                <div class="point-card">
+                    <h3>3 pontos</h3>
+                    <p>Vitória</p>
+                </div>
+
+                <div class="point-card">
+                    <h3>1 ponto</h3>
+                    <p>Empate</p>
+                </div>
+
+                <div class="point-card">
+                    <h3>0 pontos</h3>
+                    <p>Derrota</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>Formato das competições</h3>
+                <p>
+                    Todos os times se enfrentam duas vezes,
+                    uma em casa e outra fora.
+                </p>
+                <p>
+                    A classificação é atualizada conforme os
+                    resultados das partidas.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const botao = document.querySelector('#themeToggle');
+
+        botao.addEventListener('click', function() {
+            document.body.classList.toggle('light');
+
+            if (document.body.classList.contains('light')) {
+                botao.textContent = 'Modo escuro';
+            } else {
+                botao.textContent = 'Modo claro';
+            }
+        });
+    </script>
+
+</body>
+</html>

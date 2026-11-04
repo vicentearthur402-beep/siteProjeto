@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="style.css">
+    <title>Log-in</title>
+</head>
+<body>
+        <header>
+            <h1>IFLiga
+                <button type="button" id="themeToggle">Modo claro</button>
+                </h1>
+            </header>
+    <form id="form1">
+        <h2>Cadastre-se!</h2>
+        <label for="username" class="label">Nome de usuário:</label>
+        <input type="text" name="username" placeholder="Usuário">
+        <label for="email" class="label">E-Mail:</label>
+        <input type="email" name="email" placeholder="Email">
+        <label for="password" class="label">Senha:</label>
+        <input type="password" name="password" placeholder="Senha">
+        <button id="buttonCadastro">Cadastrar</button>
+    </form>
+    <form id="form2">
+        <h2>Faça Login!</h2>
+        <label for="usernameLogin" class="label">Nome do usuário:</label>
+        <input type="text" name="usernameLogin" placeholder="usuario">
+        <label for="passwordLogin" class="label">Senha:</label>
+        <input type="password" name="passwordLogin" placeholder="Senha">
+        <button> Logar </button>
+    </form>
+
+<script>
+
+    const frmLogin = document.querySelector('#form2')
+
+    frmLogin.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-type": "application/json"},
+            body: JSON.stringify({
+                    "username": frmLogin.usernameLogin.value,
+                    "password": frmLogin.passwordLogin.value
+            })
+        })
+                   if (response.status == 404)
+                return alert("Usuário não encontrado")
+
+            if (response.status == 401)
+                return alert("Senha incorreta")
+
+            if (response.ok) {
+                window.location.href = "/home"
+                return
+            }
+
+    })
+
+    const frmCadastro = document.querySelector('#form1')
+            frmCadastro.addEventListener('submit', async (ev) => {
+            ev.preventDefault()
+            const response = await fetch("/register", {
+                method: "POST",
+                headers: { "Content-type": "application/json" },
+                body: JSON.stringify({
+                    "username": frmCadastro.username.value,
+                    "email": frmCadastro.email.value,
+                    "password": frmCadastro.password.value
+                })
+            })})
+
+            const themeToggle = document.querySelector('#themeToggle');
+
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+
+    if (document.body.classList.contains('light')) {
+        themeToggle.textContent = ' Modo escuro';
+    } else {
+        themeToggle.textContent = ' Modo claro';
+    }
+});
+</script>
+</body>
+</html>

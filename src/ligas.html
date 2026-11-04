@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Ligas</title>
+    <link rel='stylesheet' href='ligas.css'>
+</head>
+
+<body>
+    <header>
+        <h1>Ligas</h1>
+        <button type="button" id="themeToggle">Modo claro</button>
+    </header>
+
+    <div id="cadastrarLigas">
+        <form id="cadastroLigas">
+            <p>Título da Liga</p>
+            <input type="text" name="nome" id="nome" placeholder="Título" required>
+
+            <p>Descrição da Liga</p>
+            <input type="text" name="descricao" id="descricao" placeholder="Descrição" required>
+
+            <button type="submit" id="enviar">Cadastrar</button>
+        </form>
+    </div>
+
+    <div id="ligasCadastradas">
+        <h2>Ligas cadastradas</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome da liga</th>
+                    <th>Times</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody id="listaLigas">
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+
+        const formulario = document.getElementById('cadastroLigas')
+        const enviarBotao = document.getElementById('enviar')
+
+        formulario.addEventListener('submit', async function(ev) {
+            ev.preventDefault()
+            const nome = formulario.nome.value;
+            const descricao = formulario.descricao.value;
+
+            const response = await fetch("/api/ligas", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    descricao: descricao
+                })
+            });
+        })
+
+        async function carregarLigas() {
+            const response = await fetch("/api/ligas");
+
+            const ligas = await response.json();
+
+            const lista = document.querySelector("#listaLigas");
+
+            lista.innerHTML = "";
+
+            ligas.forEach(liga => {
+                const linha = document.createElement("tr");
+
+                linha.innerHTML = `
+            <td>${liga.nome}</td>
+            <td>${liga.times || 0}</td>
+            <td>
+                <button>Editar</button>
+                <button>Excluir</button>
+            </td>
+        `;
+
+                lista.appendChild(linha);
+            });
+        }
+
+        carregarLigas();
+
+
+        const botao = document.querySelector('#themeToggle');
+
+        botao.addEventListener('click', function () {
+            document.body.classList.toggle('light');
+
+            if (document.body.classList.contains('light')) {
+                botao.textContent = 'Modo escuro';
+            } else {
+                botao.textContent = 'Modo claro';
+            }
+        });
+    </script>
+</body>
+
+</html>

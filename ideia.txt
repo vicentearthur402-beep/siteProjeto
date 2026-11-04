@@ -1,0 +1,11 @@
+A ideia inicial é desenvolver um software para cadastrar times e seus respectivos jogadores, 
+permitindo registrar e acompanhar estatísticas individuais, como gols, assistências, cartões 
+amarelos, cartões vermelhos e partidas disputadas. O sistema também permitirá o cadastro e gerenciamento 
+de diferentes ligas, organizando automaticamente as informações dos times e dos jogadores.
+
+
+
+Na liga, o sistema será responsável por calcular a pontuação de cada time de acordo com os resultados das 
+partidas, atribuindo automaticamente 3 pontos para uma vitória, 1 ponto para um empate e 0 pontos para uma 
+derrota. Além disso, cada time deverá enfrentar obrigatoriamente todos os outros times duas vezes durante a 
+competição, sendo uma partida em casa e outra como visitante.

@@ -1,0 +1,224 @@
+
+/* ===== BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #0f1117;
+    color: #e5e7eb;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* ===== CABEÇALHO ===== */
+header {
+    width: 100%;
+    background: #171a23;
+    padding: 22px;
+    text-align: center;
+    border-bottom: 1px solid #292e3a;
+    position: relative;
+}
+
+header h1 {
+    color: #f1f5f9;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* ===== BOTÃO DE TEMA ===== */
+#themeToggle {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: auto;
+    padding: 9px 13px;
+    background: #292e3a;
+    color: #e5e7eb;
+    border: 1px solid #3b4252;
+    border-radius: 7px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#themeToggle:hover {
+    background: #363d4d;
+}
+
+/* ===== FORMULÁRIOS ===== */
+form {
+    background: #171a23;
+    width: 90%;
+    max-width: 400px;
+    padding: 30px;
+    margin-top: 40px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #292e3a;
+    transition: background 0.3s, border 0.3s;
+}
+
+form h2 {
+    text-align: center;
+    color: #f1f5f9;
+    margin-bottom: 25px;
+    font-size: 23px;
+}
+
+/* ===== LABELS ===== */
+.label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+}
+
+/* ===== INPUTS ===== */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 19px;
+    background: #10131b;
+    border: 1px solid #343b4a;
+    border-radius: 6px;
+    color: #f1f5f9;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+}
+
+/* PLACEHOLDER */
+input::placeholder {
+    color: #929bad;
+    opacity: 1;
+}
+
+input:focus {
+    border-color: #5685ee;
+    box-shadow: 0 0 0 2px rgba(86, 133, 238, 0.15);
+}
+
+/* ===== BOTÕES ===== */
+form button {
+    width: 100%;
+    padding: 12px;
+    background: #356de6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+form button:hover {
+    background: #285acb;
+}
+
+form button:active {
+    transform: scale(0.98);
+}
+
+/* ===== MODO CLARO ===== */
+body.light {
+    background: #f0f2f5;
+    color: #252b36;
+}
+
+body.light header {
+    background: #ffffff;
+    border-bottom: 1px solid #dce1e9;
+}
+
+body.light header h1 {
+    color: #202938;
+}
+
+body.light form {
+    background: #ffffff;
+    border-color: #dce1e9;
+}
+
+body.light form h2 {
+    color: #202938;
+}
+
+body.light .label {
+    color: #414b5c;
+}
+
+body.light input {
+    background: #f7f8fa;
+    color: #202938;
+    border-color: #d1d7e0;
+}
+
+body.light input::placeholder {
+    color: #7b8493;
+}
+
+body.light input:focus {
+    background: #ffffff;
+    border-color: #356de6;
+}
+
+body.light #themeToggle {
+    background: #edf1f7;
+    color: #263247;
+    border-color: #d5dce7;
+}
+
+body.light #themeToggle:hover {
+    background: #dfe6f1;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (min-width: 850px) {
+    body {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    header {
+        flex-basis: 100%;
+    }
+
+    form {
+        margin: 60px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 22px 85px;
+    }
+
+    header h1 {
+        font-size: 25px;
+    }
+
+    #themeToggle {
+        right: 10px;
+        font-size: 11px;
+        padding: 8px;
+    }
+
+    form {
+        padding: 23px;
+        margin-top: 25px;
+    }
+}
