@@ -30,7 +30,7 @@
         <section class="welcome">
             <h2>Bem-vindo ao IFLiga!</h2>
             <p>Organize ligas, times, jogadores e acompanhe as partidas.</p>
-            <a href="ligas.html" class="main-button">Explorar ligas</a>
+            <a href="/ligas" class="main-button">Explorar ligas</a>
         </section>
 
         <section class="section">
@@ -40,17 +40,17 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <p>Ligas cadastradas</p>
-                    <h3>0</h3>
+                    <h3 id="totalLigas">0</h3>
                 </div>
 
                 <div class="stat-card">
                     <p>Times cadastrados</p>
-                    <h3>0</h3>
+                    <h3 id="totalTimes">0</h3>
                 </div>
 
                 <div class="stat-card">
                     <p>Jogadores cadastrados</p>
-                    <h3>0</h3>
+                    <h3 id="totalJogadores">0</h3>
                 </div>
 
                 <div class="stat-card">
@@ -64,25 +64,25 @@
             <h2>Acesso rápido</h2>
 
             <div class="actions-grid">
-                <a href="ligas.html" class="action-card">
+                <a href="/ligas" class="action-card">
                     <h3>Ligas</h3>
                     <p>Cadastre e organize competições.</p>
                     <small>Acessar</small>
                 </a>
 
-                <a href="times.html" class="action-card">
+                <a href="/times" class="action-card">
                     <h3>Times</h3>
                     <p>Cadastre as equipes.</p>
                     <small>Acessar</small>
                 </a>
 
-                <a href="jogadores.html" class="action-card">
+                <a href="/jogadores" class="action-card">
                     <h3>Jogadores</h3>
                     <p>Gerencie os jogadores.</p>
                     <small>Acessar</small>
                 </a>
 
-                <a href="partidas.html" class="action-card">
+                <a href="/partidas" class="action-card">
                     <h3>Partidas</h3>
                     <p>Registre os resultados.</p>
                     <small>Acessar</small>
@@ -126,6 +126,7 @@
     </main>
 
     <script>
+
         const botao = document.querySelector('#themeToggle');
 
         botao.addEventListener('click', function() {
@@ -137,6 +138,21 @@
                 botao.textContent = 'Modo claro';
             }
         });
+
+        async function carregarEstatisticas() {
+            const resposta = await fetch("/api/ligas");
+
+            if (!resposta.ok) {
+                console.log("Erro ao carregar ligas");
+                return;
+            }
+
+            const ligas = await resposta.json();
+
+            document.querySelector("#totalLigas").textContent = ligas.length;
+        }
+
+        carregarEstatisticas();
     </script>
 
 </body>

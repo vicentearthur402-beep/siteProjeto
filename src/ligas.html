@@ -49,7 +49,7 @@
         const formulario = document.getElementById('cadastroLigas')
         const enviarBotao = document.getElementById('enviar')
 
-        formulario.addEventListener('submit', async function(ev) {
+        formulario.addEventListener('submit', async function (ev) {
             ev.preventDefault()
             const nome = formulario.nome.value;
             const descricao = formulario.descricao.value;
@@ -64,13 +64,18 @@
                     descricao: descricao
                 })
             });
+            if (response.ok) {
+                formulario.reset();
+                carregarLigas();
+            } else {
+                const erro = await response.json();
+                alert(erro.msg || "Erro ao cadastrar liga");
+            }
         })
 
         async function carregarLigas() {
             const response = await fetch("/api/ligas");
-
             const ligas = await response.json();
-
             const lista = document.querySelector("#listaLigas");
 
             lista.innerHTML = "";
@@ -82,16 +87,48 @@
             <td>${liga.nome}</td>
             <td>${liga.times || 0}</td>
             <td>
-                <button>Editar</button>
-                <button>Excluir</button>
+                <button class="editar">Editar</button>
+                <button class="excluir">Excluir</button>
             </td>
         `;
+
+                const editar = linha.querySelector(".editar")
+
+                editar.addEventListener("click", function () {
+                    window.location.href = `/liga?id=${liga.id}`;
+                })
+
+                const excluir = linha.querySelector(".excluir");
+
+                excluir.addEventListener("click", async function () {
+                    const confirmar = confirm(
+                        `Deseja excluir a liga ${liga.nome} e todos os seus times?`
+                    );
+
+                    if (!confirmar) {
+                        return;
+                    }
+
+                    const resposta = await fetch(`/api/ligas/${liga.id}`, {
+                        method: "DELETE"
+                    });
+
+                    if (resposta.ok) {
+                        alert("Liga excluída com sucesso!");
+                        carregarLigas();
+                    } else {
+                        const erro = await resposta.json();
+                        alert(erro.msg || "Erro ao excluir liga");
+                    }
+                });
 
                 lista.appendChild(linha);
             });
         }
 
         carregarLigas();
+
+
 
 
         const botao = document.querySelector('#themeToggle');

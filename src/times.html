@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Time - IFLiga</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>Cadastrar time</h1>
+    </header>
+
+    <main>
+        <form id="formCadastroTime">
+
+            <label for="nome">Nome do time</label>
+            <input type="text" id="nome" required>
+
+            <label for="liga">Liga</label>
+            <select id="liga" required>
+                <option value="">Selecione uma liga</option>
+            </select>
+
+            <button type="submit">Cadastrar time</button>
+
+        </form>
+
+        <p id="mensagem"></p>
+    </main>
+    <script>
+
+        const seletorLiga = document.querySelector("#liga");
+        const formulario = document.querySelector("#formCadastroTime");
+        const mensagem = document.querySelector("#mensagem");
+
+        async function carregarLigas() {
+            const resposta = await fetch("/api/ligas");
+
+            if (!resposta.ok) {
+                mensagem.textContent = "Erro ao carregar ligas.";
+                return;
+            }
+
+            const ligas = await resposta.json();
+
+            ligas.forEach(liga => {
+                const opcao = document.createElement("option");
+
+                opcao.value = liga.id;
+                opcao.textContent = liga.nome;
+
+                seletorLiga.appendChild(opcao);
+            });
+        }
+
+        carregarLigas();
+
+
+    </script>
+</body>
+
+</html>

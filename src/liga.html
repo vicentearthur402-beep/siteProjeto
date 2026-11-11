@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Liga - IFLiga</title>
+</head>
+
+<body>
+
+    <header>
+        <h1 id="nomeLiga">Carregando liga...</h1>
+    </header>
+
+    <main>
+        <section id="editarLiga">
+            <h2>Informações da liga</h2>
+
+            <form id="formEditarLiga">
+                <label for="nome">Nome da liga</label>
+                <input type="text" id="nome" required>
+
+                <label for="descricao">Descrição</label>
+                <textarea id="descricao" required></textarea>
+
+                <button type="submit">Salvar alterações</button>
+            </form>
+
+            <p id="mensagem"></p>
+        </section>
+
+        <section id="timesLiga">
+            <h2>Times da liga</h2>
+            <button type="button" id="cadastrarTime">
+                Cadastrar time
+            </button>
+
+            <div id="listaTimes">
+                <p>Nenhum time cadastrado.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const parametros = new URLSearchParams(window.location.search);
+        const id = parametros.get("id");
+
+        const formulario = document.querySelector("#formEditarLiga");
+        const mensagem = document.querySelector("#mensagem");
+
+        async function carregarLiga() {
+            const resposta = await fetch(`/api/ligas/${id}`);
+
+            if (!resposta.ok) {
+                mensagem.textContent = "Erro ao carregar liga.";
+                return;
+            }
+
+            const liga = await resposta.json();
+
+            document.querySelector("#nomeLiga").textContent = liga.nome;
+            document.querySelector("#nome").value = liga.nome;
+            document.querySelector("#descricao").value = liga.descricao;
+        }
+
+        formulario.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const nome = document.querySelector("#nome").value
+            const descricao = document.querySelector("#descricao").value
+
+            const resposta = await fetch(`/api/ligas/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    descricao: descricao
+                })
+            })
+
+            if (resposta.ok) {
+                mensagem.textContent = "Liga atualizada com sucesso!";
+                document.querySelector("#nomeLiga").textContent = nome;
+            } else {
+                const erro = await resposta.json();
+                mensagem.textContent = erro.msg || "Erro ao atualizar liga."
+            }
+        })
+
+        carregarLiga();
+
+        document.querySelector("#cadastrarTime").addEventListener("click", function () {
+            window.location.href = "/times";
+        });
+    </script>
+</body>
+
+</html>
