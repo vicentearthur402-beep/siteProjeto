@@ -1,0 +1,145 @@
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #0f1117;
+    color: #e5e7eb;
+    min-height: 100vh;
+    padding: 30px;
+    transition: background 0.3s, color 0.3s;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #171a23;
+    border: 1px solid #292e3a;
+    border-radius: 10px;
+    padding: 20px 30px;
+    margin-bottom: 35px;
+}
+
+h1, h2 {
+    color: #f1f5f9;
+}
+
+h2 {
+    margin-bottom: 22px;
+}
+
+#themeToggle {
+    background: #292e3a;
+    color: #e5e7eb;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: #171a23;
+    border: 1px solid #292e3a;
+    border-radius: 10px;
+    padding: 30px;
+    width: 100%;
+    max-width: 450px;
+}
+
+select {
+    width: 100%;
+    background: #10131b;
+    border: 1px solid #343b4a;
+    border-radius: 6px;
+    padding: 12px;
+    color: #e5e7eb;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+}
+
+select:focus {
+    border-color: #5685ee;
+}
+
+button {
+    background: #356de6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #285acb;
+}
+
+#themeToggle:hover {
+    background: #363d4d;
+}
+
+/* TEMA CLARO */
+
+body.light {
+    background: #f0f2f5;
+    color: #202938;
+}
+
+body.light header,
+body.light section {
+    background: white;
+    border-color: #dce1e8;
+}
+
+body.light h1,
+body.light h2 {
+    color: #202938;
+}
+
+body.light select {
+    background: #f7f8fa;
+    border-color: #d1d5db;
+    color: #202938;
+}
+
+body.light #themeToggle {
+    background: #e2e8f0;
+    color: #202938;
+}
+
+body.light #themeToggle:hover {
+    background: #cbd5e1;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 600px) {
+    body {
+        padding: 15px;
+    }
+
+    header {
+        padding: 18px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    section {
+        padding: 22px;
+    }
+}

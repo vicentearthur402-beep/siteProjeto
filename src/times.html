@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Time - IFLiga</title>
+    <link rel="stylesheet" href="times.css">
 </head>
 
 <body>
@@ -32,6 +33,7 @@
     </main>
     <script>
 
+
         const seletorLiga = document.querySelector("#liga");
         const formulario = document.querySelector("#formCadastroTime");
         const mensagem = document.querySelector("#mensagem");
@@ -55,6 +57,33 @@
                 seletorLiga.appendChild(opcao);
             });
         }
+
+        formulario.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const nome = document.querySelector("#nome").value.trim();
+            const liga_id = seletorLiga.value;
+
+            const resposta = await fetch("/api/times", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    liga_id: liga_id
+                })
+            });
+
+            const resultado = await resposta.json();
+
+            if (resposta.ok) {
+                mensagem.textContent = resultado.msg;
+                formulario.reset();
+            } else {
+                mensagem.textContent = resultado.msg || "Erro ao cadastrar time.";
+            }
+        });
 
         carregarLigas();
 

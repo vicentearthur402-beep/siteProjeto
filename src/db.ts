@@ -38,12 +38,41 @@ const query3 = db.query(
 `,
 );
 
+const query4 = db.query(
+  `
+CREATE TABLE IF NOT EXISTS partidas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    liga_id INTEGER NOT NULL,
+
+    mandante_id INTEGER NOT NULL,
+    visitante_id INTEGER NOT NULL,
+
+    turno INTEGER NOT NULL,
+    rodada INTEGER NOT NULL,
+
+    gols_mandante INTEGER,
+    gols_visitante INTEGER,
+
+    FOREIGN KEY (liga_id) REFERENCES ligas(id),
+    FOREIGN KEY (mandante_id) REFERENCES times(id),
+    FOREIGN KEY (visitante_id) REFERENCES times(id),
+
+    CHECK (mandante_id <> visitante_id),
+    CHECK (turno IN (1, 2)),
+
+    UNIQUE (liga_id, turno, rodada, mandante_id, visitante_id)
+);
+`
+)
+
 const colunas = db.query("PRAGMA table_info(ligas)").all() as { name: string }[];
 
 
 query.run();
 query2.run();
 query3.run();
+query4.run();
 
 if(!colunas.some(coluna => coluna.name === "usuario_id")) {
   db.run(`

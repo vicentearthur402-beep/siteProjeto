@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partidas - IFLiga</title>
+    <link rel="stylesheet" href="partidas.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Partidas</h1>
+        <button id="themeToggle">Modo claro</button>
+    </header>
+
+    <main>
+        <section>
+            <h2>Selecione uma liga</h2>
+
+            <select id="liga">
+                <option value="">Escolha uma liga</option>
+            </select>
+
+            <button id="selecionarLiga">
+                Selecionar liga
+            </button>
+        </section>
+    </main>
+    <Script>
+        async function carregarLigas() {
+            const resposta = await fetch("/api/ligas");
+            const ligas = await resposta.json();
+
+            const seletor = document.querySelector("#liga");
+
+            ligas.forEach(liga => {
+                const opcao = document.createElement("option");
+
+                opcao.value = liga.id;
+                opcao.textContent = liga.nome;
+
+                seletor.appendChild(opcao);
+            });
+        }
+
+        document.querySelector("#selecionarLiga")
+            .addEventListener("click", () => {
+                const ligaId = document.querySelector("#liga").value;
+
+                if (!ligaId) {
+                    alert("Selecione uma liga primeiro!");
+                    return;
+                }
+
+                window.location.href = `/jogos?id=${ligaId}`;
+            });
+        const botaoTema = document.querySelector("#themeToggle");
+
+        botaoTema.addEventListener("click", function () {
+            document.body.classList.toggle("light");
+
+            botaoTema.textContent = document.body.classList.contains("light")
+                ? "Modo escuro"
+                : "Modo claro";
+        });
+        carregarLigas();
+    </script>
+
+
+</body>
+
+</html>

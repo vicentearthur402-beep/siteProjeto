@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogos - IFLiga</title>
+    <link rel="stylesheet" href="jogos.css">
+</head>
+
+<body>
+
+    <header>
+        <h1 id="nomeLiga">Carregando liga...</h1>
+        <div id="dashboard">
+            <div class="card-dashboard">
+                <h3>Times</h3>
+                <p id="totalTimes">0</p>
+            </div>
+
+            <div class="card-dashboard">
+                <h3>Partidas totais</h3>
+                <p id="totalPartidas">0</p>
+            </div>
+
+            <div class="card-dashboard">
+                <h3>Disputadas</h3>
+                <p id="partidasDisputadas">0</p>
+            </div>
+
+            <div class="card-dashboard">
+                <h3>Restantes</h3>
+                <p id="partidasRestantes">0</p>
+            </div>
+        </div>
+        <button onclick="history.back()">Voltar</button>
+    </header>
+
+    <main>
+
+        <section>
+            <h2>Calendário de partidas</h2>
+
+            <button id="gerarPartidas">Gerar calendário</button>
+
+            <div id="listaPartidas">
+                <p>Carregando partidas...</p>
+            </div>
+
+        </section>
+
+        <section>
+            <h2>Classificação</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Time</th>
+                        <th>PTS</th>
+                        <th>J</th>
+                        <th>V</th>
+                        <th>E</th>
+                        <th>D</th>
+                        <th>GP</th>
+                        <th>GC</th>
+                        <th>SG</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tabelaClassificacao"></tbody>
+            </table>
+        </section>
+
+    </main>
+    <script>
+        async function carregarLiga() {
+            const parametros = new URLSearchParams(window.location.search);
+            const ligaId = parametros.get("id");
+
+            if (!ligaId) {
+                document.querySelector("#nomeLiga").textContent = "Liga não selecionada";
+                return;
+            }
+
+            try {
+                const resposta = await fetch(`/api/ligas/${ligaId}`);
+                const liga = await resposta.json();
+
+                if (!resposta.ok) {
+                    document.querySelector("#nomeLiga").textContent =
+                        liga.erro || "Erro ao carregar liga";
+                    return;
+                }
+
+                document.querySelector("#nomeLiga").textContent = liga.nome;
+
+            } catch (erro) {
+                console.error("Erro ao carregar liga:", erro);
+                document.querySelector("#nomeLiga").textContent =
+                    "Erro ao carregar liga";
+            }
+        }
+
+        async function carregarPartidas() {
+            const parametros = new URLSearchParams(window.location.search);
+            const ligaId = parametros.get("id");
+
+            const lista = document.querySelector("#listaPartidas");
+
+            try {
+                const resposta = await fetch(`/api/ligas/${ligaId}/partidas`);
+                const partidas = await resposta.json();
+
+                if (!resposta.ok) {
+                    lista.textContent = "Erro ao carregar partidas.";
+                    return;
+                }
+
+                if (partidas.length === 0) {
+                    lista.innerHTML = "<p>Nenhuma partida foi gerada ainda.</p>";
+                    return;
+                }
+
+                lista.innerHTML = "";
+
+                let turnoAtual = 0;
+                let rodadaAtual = 0;
+
+                partidas.forEach(partida => {
+
+                    if (partida.turno !== turnoAtual) {
+                        turnoAtual = partida.turno;
+                        rodadaAtual = 0;
+
+                        const tituloTurno = document.createElement("h2");
+                        tituloTurno.textContent = `${turnoAtual}º Turno`;
+                        lista.appendChild(tituloTurno);
+                    }
+
+                    if (partida.rodada !== rodadaAtual) {
+                        rodadaAtual = partida.rodada;
+
+                        const tituloRodada = document.createElement("h3");
+                        tituloRodada.textContent = `${rodadaAtual}ª Rodada`;
+                        lista.appendChild(tituloRodada);
+                    }
+
+                    const jogo = document.createElement("div");
+                    jogo.classList.add("partida");
+
+                    jogo.innerHTML = `
+                <span>${partida.mandante}</span>
+
+                <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    class="gol-mandante"
+                    data-id="${partida.id}"
+                    value="${partida.gols_mandante ?? ""}"
+                >
+
+                <strong>x</strong>
+
+                <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    class="gol-visitante"
+                    data-id="${partida.id}"
+                    value="${partida.gols_visitante ?? ""}"
+                >
+
+                <span>${partida.visitante}</span>
+            `;
+
+                    lista.appendChild(jogo);
+                });
+
+                const botao = document.createElement("button");
+                botao.id = "enviarResultados";
+                botao.textContent = "Enviar resultados";
+
+                lista.appendChild(botao);
+
+                botao.addEventListener("click", salvarResultados);
+
+            } catch (erro) {
+                console.error("Erro ao carregar partidas:", erro);
+                lista.textContent = "Erro ao buscar partidas.";
+            }
+        }
+
+
+        async function salvarResultados() {
+            const parametros = new URLSearchParams(window.location.search);
+            const ligaId = parametros.get("id");
+
+            const partidas = [];
+            const jogos = document.querySelectorAll(".partida");
+
+            for (const jogo of jogos) {
+                const inputMandante = jogo.querySelector(".gol-mandante");
+                const inputVisitante = jogo.querySelector(".gol-visitante");
+
+                const mandante = inputMandante.value;
+                const visitante = inputVisitante.value;
+
+                // Ignora partidas sem nenhum placar preenchido
+                if (mandante === "" && visitante === "") {
+                    continue;
+                }
+
+                // Exige os dois gols
+                if (mandante === "" || visitante === "") {
+                    alert("Preencha os dois placares de cada partida!");
+                    return;
+                }
+
+                const golsMandante = Number(mandante);
+                const golsVisitante = Number(visitante);
+
+                if (
+                    !Number.isSafeInteger(golsMandante) ||
+                    !Number.isSafeInteger(golsVisitante) ||
+                    golsMandante < 0 ||
+                    golsVisitante < 0
+                ) {
+                    alert("Digite apenas números inteiros positivos ou zero.");
+                    return;
+                }
+
+                partidas.push({
+                    id: Number(inputMandante.dataset.id),
+                    gols_mandante: golsMandante,
+                    gols_visitante: golsVisitante
+                });
+            }
+
+            if (partidas.length === 0) {
+                alert("Digite pelo menos um resultado!");
+                return;
+            }
+
+            try {
+                const resposta = await fetch(`/api/ligas/${ligaId}/placares`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ partidas })
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    alert(resultado.erro || "Erro ao salvar resultados.");
+                    return;
+                }
+                alert(resultado.mensagem);
+
+                await carregarPartidas();
+                await carregarClassificacao();
+                await carregarDashboard();
+            } catch (erro) {
+                console.error("Erro ao salvar:", erro);
+                alert("Não foi possível salvar os resultados.");
+            }
+        }
+
+
+        document.querySelector("#gerarPartidas")
+            .addEventListener("click", async () => {
+
+                const parametros = new URLSearchParams(window.location.search);
+                const ligaId = parametros.get("id");
+
+                const confirmar = confirm(
+                    "Deseja gerar todas as partidas desta liga?"
+                );
+
+                if (!confirmar) return;
+
+                try {
+                    const resposta = await fetch(
+                        `/api/ligas/${ligaId}/gerar-partidas`,
+                        {
+                            method: "POST"
+                        }
+                    );
+
+                    const resultado = await resposta.json();
+
+                    if (!resposta.ok) {
+                        alert(resultado.erro || "Erro ao gerar partidas.");
+                        return;
+                    }
+
+                    alert(resultado.mensagem);
+
+                    carregarPartidas();
+
+                } catch (erro) {
+                    console.error("Erro:", erro);
+                    alert("Não foi possível gerar as partidas.");
+                }
+            });
+
+        async function carregarClassificacao() {
+            const parametros = new URLSearchParams(window.location.search);
+            const ligaId = parametros.get("id");
+
+            const tabela = document.querySelector("#tabelaClassificacao");
+
+            try {
+                const resposta = await fetch(
+                    `/api/ligas/${ligaId}/classificacao`
+                );
+
+                const classificacao = await resposta.json();
+
+                if (!resposta.ok) {
+                    tabela.innerHTML = "<tr><td colspan='10'>Erro ao carregar classificação.</td></tr>";
+                    return;
+                }
+
+                tabela.innerHTML = "";
+
+                classificacao.forEach((time, indice) => {
+                    const linha = document.createElement("tr");
+
+                    linha.innerHTML = `
+                <td>${indice + 1}</td>
+                <td>${time.nome}</td>
+                <td>${time.pontos}</td>
+                <td>${time.jogos}</td>
+                <td>${time.vitorias}</td>
+                <td>${time.empates}</td>
+                <td>${time.derrotas}</td>
+                <td>${time.gols_pro}</td>
+                <td>${time.gols_contra}</td>
+                <td>${time.saldo}</td>
+            `;
+
+                    tabela.appendChild(linha);
+                });
+
+            } catch (erro) {
+                console.error("Erro ao carregar classificação:", erro);
+                tabela.innerHTML = "<tr><td colspan='10'>Erro ao buscar classificação.</td></tr>";
+            }
+        }
+        async function carregarDashboard() {
+            const parametros = new URLSearchParams(window.location.search);
+            const ligaId = parametros.get("id");
+
+            try {
+                const resposta = await fetch(
+                    `/api/ligas/${ligaId}/dashboard`
+                );
+
+                const dados = await resposta.json();
+
+                if (!resposta.ok) {
+                    console.error(dados.erro);
+                    return;
+                }
+
+                document.querySelector("#totalTimes").textContent = dados.totalTimes;
+                document.querySelector("#totalPartidas").textContent = dados.totalPartidas;
+                document.querySelector("#partidasDisputadas").textContent = dados.partidasDisputadas;
+                document.querySelector("#partidasRestantes").textContent = dados.partidasRestantes;
+
+            } catch (erro) {
+                console.error("Erro ao carregar dashboard:", erro);
+            }
+        }
+
+        carregarPartidas();
+        carregarLiga();
+        carregarClassificacao();
+        carregarDashboard();
+    </script>
+</body>
+
+</html>

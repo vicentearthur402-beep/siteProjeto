@@ -5,12 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Liga - IFLiga</title>
+    <link rel="stylesheet" href="liga.css">
 </head>
 
 <body>
 
     <header>
         <h1 id="nomeLiga">Carregando liga...</h1>
+        <button type="button" id="abrirDashboard">
+            Abrir dashboard
+        </button>
     </header>
 
     <main>
@@ -64,6 +68,32 @@
             document.querySelector("#descricao").value = liga.descricao;
         }
 
+        async function carregarTimes() {
+            const lista = document.querySelector("#listaTimes");
+
+            const resposta = await fetch(`/api/ligas/${id}/times`);
+
+            if (!resposta.ok) {
+                lista.textContent = "Erro ao carregar os times.";
+                return;
+            }
+
+            const times = await resposta.json();
+
+            lista.innerHTML = "";
+
+            if (times.length === 0) {
+                lista.textContent = "Nenhum time cadastrado.";
+                return;
+            }
+
+            times.forEach(time => {
+                const elemento = document.createElement("div");
+                elemento.textContent = time.nome;
+                lista.appendChild(elemento);
+            });
+        }
+
         formulario.addEventListener("submit", async function (event) {
             event.preventDefault();
 
@@ -91,9 +121,14 @@
         })
 
         carregarLiga();
+        carregarTimes();
 
         document.querySelector("#cadastrarTime").addEventListener("click", function () {
             window.location.href = "/times";
+        });
+
+        document.querySelector("#abrirDashboard").addEventListener("click", function () {
+            window.location.href = `/jogos?id=${id}`;
         });
     </script>
 </body>

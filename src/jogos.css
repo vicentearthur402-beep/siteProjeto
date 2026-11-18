@@ -1,0 +1,347 @@
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #0f1117;
+    color: #e5e7eb;
+    min-height: 100vh;
+    padding: 30px;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* CABEÇALHO */
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 25px;
+    background: #171a23;
+    border: 1px solid #292e3a;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    color: #f1f5f9;
+    font-size: 28px;
+}
+
+/* DASHBOARD */
+
+#dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
+    gap: 15px;
+    flex: 1;
+}
+
+.card-dashboard {
+    background: #10131b;
+    border: 1px solid #292e3a;
+    border-radius: 8px;
+    padding: 18px;
+    text-align: center;
+}
+
+.card-dashboard h3 {
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: normal;
+    margin-bottom: 10px;
+}
+
+.card-dashboard p {
+    color: #5685ee;
+    font-size: 27px;
+    font-weight: bold;
+}
+
+button {
+    background: #356de6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #285acb;
+}
+
+/* CONTEÚDO PRINCIPAL */
+
+main {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 25px;
+    align-items: start;
+}
+
+section {
+    background: #171a23;
+    border: 1px solid #292e3a;
+    border-radius: 10px;
+    padding: 25px;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+section > h2 {
+    color: #f1f5f9;
+    font-size: 21px;
+    margin-bottom: 22px;
+}
+
+/* CALENDÁRIO */
+
+#gerarPartidas {
+    margin-bottom: 25px;
+}
+
+#listaPartidas > h2 {
+    color: #5685ee;
+    font-size: 19px;
+    margin: 25px 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #343b4a;
+}
+
+#listaPartidas > h3 {
+    color: #cbd5e1;
+    font-size: 15px;
+    margin: 18px 0 12px;
+}
+
+#listaPartidas > p {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* PARTIDAS */
+
+.partida {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 55px 20px 55px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    background: #10131b;
+    border: 1px solid #292e3a;
+    border-radius: 7px;
+    padding: 12px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.partida span {
+    color: #e5e7eb;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.partida strong {
+    color: #94a3b8;
+}
+
+.partida input {
+    width: 100%;
+    min-width: 0;
+    background: #171a23;
+    border: 1px solid #343b4a;
+    border-radius: 5px;
+    padding: 9px 5px;
+    color: #e5e7eb;
+    text-align: center;
+    font-size: 15px;
+    outline: none;
+}
+
+.partida input:focus {
+    border-color: #5685ee;
+}
+
+#enviarResultados {
+    margin-top: 20px;
+}
+
+/* CLASSIFICAÇÃO */
+
+table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+th, td {
+    padding: 13px 10px;
+    border-bottom: 1px solid #292e3a;
+    white-space: nowrap;
+}
+
+th {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+td {
+    color: #e5e7eb;
+    font-size: 14px;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+    text-align: left;
+}
+
+tbody tr:hover {
+    background: #202431;
+}
+
+/* TEMA CLARO */
+
+body.light {
+    background: #f0f2f5;
+    color: #202938;
+}
+
+body.light header,
+body.light section {
+    background: white;
+    border-color: #dce1e8;
+}
+
+body.light header h1,
+body.light section > h2 {
+    color: #202938;
+}
+
+body.light .card-dashboard {
+    background: #f7f8fa;
+    border-color: #dce1e8;
+}
+
+body.light .card-dashboard h3 {
+    color: #64748b;
+}
+
+body.light .card-dashboard p {
+    color: #356de6;
+}
+
+body.light #listaPartidas > h2 {
+    border-color: #dce1e8;
+}
+
+body.light #listaPartidas > h3 {
+    color: #475569;
+}
+
+body.light .partida {
+    background: #f7f8fa;
+    border-color: #dce1e8;
+}
+
+body.light .partida span,
+body.light td {
+    color: #202938;
+}
+
+body.light .partida input {
+    background: white;
+    border-color: #d1d5db;
+    color: #202938;
+}
+
+body.light th,
+body.light td {
+    border-color: #dce1e8;
+}
+
+body.light th {
+    color: #64748b;
+}
+
+body.light tbody tr:hover {
+    background: #eef2f7;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1100px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+
+    #dashboard {
+        flex-basis: 100%;
+        order: 3;
+    }
+
+    header button {
+        order: 2;
+    }
+}
+
+@media (max-width: 650px) {
+    body {
+        padding: 15px;
+    }
+
+    header {
+        padding: 18px;
+    }
+
+    header h1 {
+        font-size: 23px;
+    }
+
+    #dashboard {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    section {
+        padding: 18px;
+    }
+
+    .partida {
+        grid-template-columns: minmax(0, 1fr) 38px 15px 38px minmax(0, 1fr);
+        gap: 5px;
+        padding: 9px 5px;
+    }
+
+    .partida span {
+        font-size: 12px;
+    }
+
+    .partida input {
+        font-size: 13px;
+        padding: 8px 2px;
+    }
+}
+
+@media (max-width: 380px) {
+    #dashboard {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .card-dashboard {
+        padding: 12px 5px;
+    }
+
+    .card-dashboard p {
+        font-size: 22px;
+    }
+}
