@@ -4,59 +4,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Time - IFLiga</title>
+    <title>Gerenciar Times - IFLiga</title>
     <link rel="stylesheet" href="times.css">
 </head>
 
 <body>
 
     <header>
-        <h1>Cadastrar time</h1>
+        <h1>Gerenciamento de times</h1>
+        <button type="button" onclick="window.location.href='/home'">
+            Voltar ao menu
+        </button>
     </header>
 
     <main>
-        <form id="formCadastroTime">
 
-            <label for="nome">Nome do time</label>
-            <input type="text" id="nome" required>
+        <section>
+            <h2>Cadastrar time</h2>
 
-            <label for="liga">Liga</label>
-            <select id="liga" required>
-                <option value="">Selecione uma liga</option>
-            </select>
+            <form id="formCadastroTime">
 
-            <button type="submit">Cadastrar time</button>
+                <label for="nome">Nome do time</label>
+                <input type="text" id="nome" required>
 
-        </form>
+                <label for="liga">Liga</label>
+                <select id="liga" required>
+                    <option value="">Selecione uma liga</option>
+                </select>
 
-        <p id="mensagem"></p>
+                <button type="submit">Cadastrar time</button>
+
+            </form>
+
+            <section>
+                <h2>Times cadastrados</h2>
+
+                <div id="listaTimes">
+                    <p>Carregando times...</p>
+                </div>
+
+                <p id="mensagemExclusao"></p>
+            </section>
+
+            <p id="mensagem"></p>
+        </section>
+
+        <section>
+            <h2>Cadastrar treinador</h2>
+
+            <form id="formCadastroTreinador">
+
+                <label for="nomeTreinador">Nome do treinador</label>
+                <input type="text" id="nomeTreinador" required>
+
+                <button type="submit">Cadastrar treinador</button>
+
+            </form>
+
+            <p id="mensagemTreinador"></p>
+        </section>
+
+        <section>
+            <h2>Vincular treinador a um time</h2>
+
+            <form id="formVincularTreinador">
+
+                <label for="timeTreinador">Time</label>
+                <select id="timeTreinador" required>
+                    <option value="">Selecione um time</option>
+                </select>
+
+                <label for="treinador">Treinador</label>
+                <select id="treinador" required>
+                    <option value="">Selecione um treinador</option>
+                </select>
+
+                <button type="submit">Vincular treinador</button>
+
+            </form>
+
+            <p id="mensagemVinculo"></p>
+        </section>
+
     </main>
+
     <script>
-
-
+        const listaTimes = document.querySelector("#listaTimes");
+        const mensagemExclusao = document.querySelector("#mensagemExclusao");
         const seletorLiga = document.querySelector("#liga");
         const formulario = document.querySelector("#formCadastroTime");
         const mensagem = document.querySelector("#mensagem");
 
+        const formularioTreinador = document.querySelector("#formCadastroTreinador");
+        const mensagemTreinador = document.querySelector("#mensagemTreinador");
+
+        const formularioVinculo = document.querySelector("#formVincularTreinador");
+        const seletorTime = document.querySelector("#timeTreinador");
+        const seletorTreinador = document.querySelector("#treinador");
+        const mensagemVinculo = document.querySelector("#mensagemVinculo");
+
+        // ==========================================
+        // CARREGAR LIGAS
+        // ==========================================
+
         async function carregarLigas() {
-            const resposta = await fetch("/api/ligas");
+            try {
+                const resposta = await fetch("/api/ligas");
 
-            if (!resposta.ok) {
+                if (!resposta.ok) {
+                    mensagem.textContent = "Erro ao carregar ligas.";
+                    return;
+                }
+
+                const ligas = await resposta.json();
+
+                ligas.forEach(liga => {
+                    const opcao = document.createElement("option");
+                    opcao.value = liga.id;
+                    opcao.textContent = liga.nome;
+                    seletorLiga.appendChild(opcao);
+                });
+
+            } catch (erro) {
+                console.error(erro);
                 mensagem.textContent = "Erro ao carregar ligas.";
-                return;
             }
-
-            const ligas = await resposta.json();
-
-            ligas.forEach(liga => {
-                const opcao = document.createElement("option");
-
-                opcao.value = liga.id;
-                opcao.textContent = liga.nome;
-
-                seletorLiga.appendChild(opcao);
-            });
         }
+
+        // ==========================================
+        // CADASTRAR E VINCULAR TIME
+        // ==========================================
 
         formulario.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -64,31 +141,260 @@
             const nome = document.querySelector("#nome").value.trim();
             const liga_id = seletorLiga.value;
 
-            const resposta = await fetch("/api/times", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    nome: nome,
-                    liga_id: liga_id
-                })
-            });
+            if (!nome || !liga_id) {
+                mensagem.textContent = "Preencha todos os campos.";
+                return;
+            }
 
-            const resultado = await resposta.json();
+            try {
+                const respostaTime = await fetch("/api/times", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ nome })
+                });
 
-            if (resposta.ok) {
-                mensagem.textContent = resultado.msg;
+                const resultadoTime = await respostaTime.json();
+
+                if (!respostaTime.ok) {
+                    mensagem.textContent = resultadoTime.erro || "Erro ao cadastrar time.";
+                    return;
+                }
+
+                const time_id = resultadoTime.id;
+
+                const respostaVinculo = await fetch(`/api/ligas/${liga_id}/times`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ time_id })
+                });
+
+                const resultadoVinculo = await respostaVinculo.json();
+
+                if (!respostaVinculo.ok) {
+                    mensagem.textContent = resultadoVinculo.erro || "Erro ao vincular time.";
+                    return;
+                }
+
+                mensagem.textContent = "Time cadastrado e vinculado à liga com sucesso!";
+
                 formulario.reset();
-            } else {
-                mensagem.textContent = resultado.msg || "Erro ao cadastrar time.";
+                await carregarTimes();
+
+            } catch (erro) {
+                console.error(erro);
+                mensagem.textContent = "Erro de comunicação com o servidor.";
             }
         });
 
-        carregarLigas();
+        // ==========================================
+        // CADASTRAR TREINADOR
+        // ==========================================
 
+        formularioTreinador.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const nome = document.querySelector("#nomeTreinador").value.trim();
+
+            try {
+                const resposta = await fetch("/api/treinadores", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ nome })
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    mensagemTreinador.textContent = resultado.erro || "Erro ao cadastrar treinador.";
+                    return;
+                }
+
+                mensagemTreinador.textContent = "Treinador cadastrado com sucesso!";
+
+                formularioTreinador.reset();
+                await carregarTreinadores();
+
+            } catch (erro) {
+                console.error(erro);
+                mensagemTreinador.textContent = "Erro de comunicação com o servidor.";
+            }
+        });
+
+        // ==========================================
+        // CARREGAR TIMES
+        // ==========================================
+
+        async function carregarTimes() {
+            try {
+                const resposta = await fetch("/api/times");
+
+                if (!resposta.ok) {
+                    listaTimes.textContent = "Erro ao carregar times.";
+                    return;
+                }
+
+                const times = await resposta.json();
+
+                // Atualizar seletor de times
+                seletorTime.innerHTML =
+                    '<option value="">Selecione um time</option>';
+
+                // Limpar listagem
+                listaTimes.innerHTML = "";
+
+                if (times.length === 0) {
+                    listaTimes.textContent = "Nenhum time cadastrado.";
+                    return;
+                }
+
+                times.forEach(time => {
+                    // Adicionar ao seletor
+                    const opcao = document.createElement("option");
+                    opcao.value = time.id;
+                    opcao.textContent = time.nome;
+                    seletorTime.appendChild(opcao);
+
+                    // Criar elemento do time
+                    const item = document.createElement("div");
+                    item.classList.add("item-time");
+
+                    const nome = document.createElement("span");
+                    nome.textContent = time.nome;
+
+                    const botaoExcluir = document.createElement("button");
+                    botaoExcluir.type = "button";
+                    botaoExcluir.textContent = "Excluir";
+                    botaoExcluir.classList.add("botao-excluir");
+
+                    botaoExcluir.addEventListener("click", () => {
+                        excluirTime(time.id, time.nome);
+                    });
+
+                    item.appendChild(nome);
+                    item.appendChild(botaoExcluir);
+
+                    listaTimes.appendChild(item);
+                });
+
+            } catch (erro) {
+                console.error(erro);
+                listaTimes.textContent = "Erro de comunicação com o servidor.";
+            }
+        }
+
+        async function excluirTime(id, nome) {
+            const confirmar = confirm(
+                `Tem certeza que deseja excluir o time "${nome}"?`
+            );
+
+            if (!confirmar) return;
+
+            try {
+                const resposta = await fetch(`/api/times/${id}`, {
+                    method: "DELETE"
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    mensagemExclusao.textContent =
+                        resultado.erro || "Erro ao excluir time.";
+                    return;
+                }
+
+                mensagemExclusao.textContent = resultado.mensagem;
+
+                await carregarTimes();
+
+            } catch (erro) {
+                console.error(erro);
+                mensagemExclusao.textContent =
+                    "Erro de comunicação com o servidor.";
+            }
+        }
+
+        // ==========================================
+        // CARREGAR TREINADORES
+        // ==========================================
+
+        async function carregarTreinadores() {
+            try {
+                const resposta = await fetch("/api/treinadores");
+
+                if (!resposta.ok) return;
+
+                const treinadores = await resposta.json();
+
+                seletorTreinador.innerHTML = '<option value="">Selecione um treinador</option>';
+
+                treinadores.forEach(treinador => {
+                    const opcao = document.createElement("option");
+                    opcao.value = treinador.id;
+                    opcao.textContent = treinador.nome;
+                    seletorTreinador.appendChild(opcao);
+                });
+
+            } catch (erro) {
+                console.error(erro);
+            }
+        }
+
+        // ==========================================
+        // VINCULAR TREINADOR AO TIME
+        // ==========================================
+
+        formularioVinculo.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const time_id = seletorTime.value;
+            const treinador_id = seletorTreinador.value;
+
+            if (!time_id || !treinador_id) {
+                mensagemVinculo.textContent = "Selecione um time e um treinador.";
+                return;
+            }
+
+            try {
+                const resposta = await fetch(`/api/times/${time_id}/treinador`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ treinador_id: Number(treinador_id) })
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    mensagemVinculo.textContent = resultado.erro || "Erro ao vincular treinador.";
+                    return;
+                }
+
+                mensagemVinculo.textContent = resultado.mensagem;
+                formularioVinculo.reset();
+
+            } catch (erro) {
+                console.error(erro);
+                mensagemVinculo.textContent = "Erro de comunicação com o servidor.";
+            }
+        });
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+
+        carregarLigas();
+        carregarTimes();
+        carregarTreinadores();
 
     </script>
+
 </body>
 
 </html>

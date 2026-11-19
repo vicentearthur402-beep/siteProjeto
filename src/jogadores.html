@@ -1,0 +1,470 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogadores - IFLiga</title>
+    <link rel="stylesheet" href="jogadores.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Gerenciamento de jogadores</h1>
+        <button type="button" onclick="window.location.href='/home'">
+            Voltar ao menu
+        </button>
+    </header>
+
+    <main>
+
+        <section>
+            <h2>Selecionar time</h2>
+
+            <label for="liga">Liga:</label>
+            <select id="liga">
+                <option value="">Selecione uma liga</option>
+            </select>
+
+            <label for="time">Time:</label>
+            <select id="time" disabled>
+                <option value="">Selecione um time</option>
+            </select>
+        </section>
+
+        <section>
+            <h2>Cadastrar jogador</h2>
+
+            <form id="formJogador">
+
+                <label for="nome">Nome do jogador:</label>
+                <input type="text" id="nome" required>
+
+                <label for="numero">Número da camisa:</label>
+                <input type="number" id="numero" min="1" max="99">
+
+                <label for="posicao">Posição:</label>
+                <select id="posicao" required>
+                    <option value="">Selecione uma posição</option>
+                    <option value="Goleiro">Goleiro</option>
+                    <option value="Zagueiro">Zagueiro</option>
+                    <option value="Lateral">Lateral</option>
+                    <option value="Meio-campo">Meio-campo</option>
+                    <option value="Atacante">Atacante</option>
+                </select>
+
+                <button type="submit">Cadastrar jogador</button>
+
+            </form>
+
+            <p id="mensagem"></p>
+        </section>
+
+        <section id="secaoEdicao" hidden>
+            <h2>Editar jogador</h2>
+
+            <form id="formEditarJogador">
+
+                <label for="editarNome">Nome do jogador:</label>
+                <input type="text" id="editarNome" required>
+
+                <label for="editarNumero">Número da camisa:</label>
+                <input type="number" id="editarNumero" min="1" max="99">
+
+                <label for="editarPosicao">Posição:</label>
+                <select id="editarPosicao" required>
+                    <option value="">Selecione uma posição</option>
+                    <option value="Goleiro">Goleiro</option>
+                    <option value="Zagueiro">Zagueiro</option>
+                    <option value="Lateral">Lateral</option>
+                    <option value="Meio-campo">Meio-campo</option>
+                    <option value="Atacante">Atacante</option>
+                </select>
+
+                <button type="submit">Salvar alterações</button>
+                <button type="button" id="cancelarEdicao">Cancelar</button>
+
+            </form>
+        </section>
+
+        <section>
+            <h2>Elenco do time</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Nome</th>
+                        <th>Posição</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody id="listaJogadores">
+                    <tr>
+                        <td colspan="4">Selecione um time para visualizar o elenco.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <script>
+
+        const selectLiga = document.getElementById("liga");
+        const selectTime = document.getElementById("time");
+        const listaJogadores = document.getElementById("listaJogadores");
+        const mensagem = document.getElementById("mensagem");
+
+        const secaoEdicao = document.getElementById("secaoEdicao");
+        const formEditarJogador = document.getElementById("formEditarJogador");
+
+        let jogadorEditando = null;
+
+        // ==========================================
+        // CARREGAR LIGAS
+        // ==========================================
+
+        async function carregarLigas() {
+            try {
+                const resposta = await fetch("/api/ligas");
+                const ligas = await resposta.json();
+
+                selectLiga.innerHTML = '<option value="">Selecione uma liga</option>';
+
+                ligas.forEach(liga => {
+                    const option = document.createElement("option");
+
+                    option.value = liga.id;
+                    option.textContent = liga.nome;
+
+                    selectLiga.appendChild(option);
+                });
+
+            } catch (erro) {
+                console.error(erro);
+                mensagem.textContent = "Erro ao carregar ligas.";
+            }
+        }
+
+        // ==========================================
+        // CARREGAR TIMES DA LIGA
+        // ==========================================
+
+        async function carregarTimes() {
+            const ligaId = selectLiga.value;
+
+            selectTime.innerHTML = '<option value="">Selecione um time</option>';
+            selectTime.disabled = true;
+
+            listaJogadores.innerHTML = `
+                <tr>
+                    <td colspan="4">Selecione um time para visualizar o elenco.</td>
+                </tr>
+            `;
+
+            secaoEdicao.hidden = true;
+            jogadorEditando = null;
+            mensagem.textContent = "";
+
+            if (!ligaId) return;
+
+            try {
+                const resposta = await fetch(`/api/ligas/${ligaId}/times`);
+                const times = await resposta.json();
+
+                times.forEach(time => {
+                    const option = document.createElement("option");
+
+                    option.value = time.id;
+                    option.textContent = time.nome;
+
+                    selectTime.appendChild(option);
+                });
+
+                selectTime.disabled = false;
+
+            } catch (erro) {
+                console.error(erro);
+                mensagem.textContent = "Erro ao carregar times.";
+            }
+        }
+
+        // ==========================================
+        // CARREGAR JOGADORES DO TIME
+        // ==========================================
+
+        async function carregarJogadores() {
+            const timeId = selectTime.value;
+
+            secaoEdicao.hidden = true;
+            jogadorEditando = null;
+            mensagem.textContent = "";
+
+            if (!timeId) {
+                listaJogadores.innerHTML = `
+                    <tr>
+                        <td colspan="4">Selecione um time para visualizar o elenco.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            try {
+                const resposta = await fetch(`/api/times/${timeId}/jogadores`);
+                const jogadores = await resposta.json();
+
+                listaJogadores.innerHTML = "";
+
+                if (!resposta.ok) {
+                    mensagem.textContent = jogadores.erro || "Erro ao carregar jogadores.";
+                    return;
+                }
+
+                if (jogadores.length === 0) {
+                    listaJogadores.innerHTML = `
+                        <tr>
+                            <td colspan="4">Esse time ainda não possui jogadores.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                // Ordem das posições
+                const ordemPosicoes = {
+                    "Goleiro": 1,
+                    "Zagueiro": 2,
+                    "Lateral": 3,
+                    "Meio-campo": 4,
+                    "Atacante": 5
+                };
+
+                // Ordenar antes de percorrer a lista
+                jogadores.sort((a, b) => {
+                    return (ordemPosicoes[a.posicao] ?? 99) -
+                        (ordemPosicoes[b.posicao] ?? 99) ||
+                        (a.numero ?? 999) - (b.numero ?? 999);
+                });
+
+                jogadores.forEach(jogador => {
+                    const linha = document.createElement("tr");
+
+                    const numero = document.createElement("td");
+                    const nome = document.createElement("td");
+                    const posicao = document.createElement("td");
+                    const acoes = document.createElement("td");
+
+                    numero.textContent = jogador.numero ?? "-";
+                    nome.textContent = jogador.nome;
+                    posicao.textContent = jogador.posicao;
+
+                    acoes.classList.add("acoes-jogador");
+
+                    // Botão editar
+                    const botaoEditar = document.createElement("button");
+                    botaoEditar.textContent = "Editar";
+                    botaoEditar.type = "button";
+                    botaoEditar.classList.add("btn-editar");
+
+                    botaoEditar.addEventListener("click", () => {
+                        editarJogador(jogador);
+                    });
+
+                    // Botão excluir
+                    const botaoExcluir = document.createElement("button");
+                    botaoExcluir.textContent = "Excluir";
+                    botaoExcluir.type = "button";
+                    botaoExcluir.classList.add("btn-excluir");
+
+                    botaoExcluir.addEventListener("click", () => {
+                        excluirJogador(jogador);
+                    });
+
+                    acoes.append(botaoEditar, botaoExcluir);
+                    linha.append(numero, nome, posicao, acoes);
+
+                    listaJogadores.appendChild(linha);
+                });
+
+            } catch (erro) {
+                console.error(erro);
+                mensagem.textContent = "Erro ao carregar jogadores.";
+            }
+        }
+
+        // ==========================================
+        // CADASTRAR JOGADOR
+        // ==========================================
+
+        const formJogador = document.getElementById("formJogador");
+
+        formJogador.addEventListener("submit", async (evento) => {
+            evento.preventDefault();
+
+            const timeId = selectTime.value;
+
+            if (!timeId) {
+                mensagem.textContent = "Selecione um time primeiro.";
+                return;
+            }
+
+            const jogador = {
+                nome: document.getElementById("nome").value.trim(),
+                numero: document.getElementById("numero").value || null,
+                posicao: document.getElementById("posicao").value
+            };
+
+            try {
+                const resposta = await fetch(`/api/times/${timeId}/jogadores`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(jogador)
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    mensagem.textContent = resultado.erro || "Erro ao cadastrar jogador.";
+                    return;
+                }
+
+                mensagem.textContent = resultado.mensagem;
+
+                formJogador.reset();
+
+                await carregarJogadores();
+
+            } catch (erro) {
+                console.error(erro);
+                mensagem.textContent = "Erro de comunicação com o servidor.";
+            }
+        });
+
+        // ==========================================
+        // ABRIR FORMULÁRIO DE EDIÇÃO
+        // ==========================================
+
+        function editarJogador(jogador) {
+            jogadorEditando = jogador.id;
+
+            document.getElementById("editarNome").value = jogador.nome;
+            document.getElementById("editarNumero").value = jogador.numero ?? "";
+            document.getElementById("editarPosicao").value = jogador.posicao;
+
+            secaoEdicao.hidden = false;
+            secaoEdicao.scrollIntoView({ behavior: "smooth" });
+
+            mensagem.textContent = "";
+        }
+
+        // ==========================================
+        // SALVAR EDIÇÃO
+        // ==========================================
+
+        formEditarJogador.addEventListener("submit", async (evento) => {
+            evento.preventDefault();
+
+            if (!jogadorEditando) return;
+
+            const jogador = {
+                nome: document.getElementById("editarNome").value.trim(),
+                numero: document.getElementById("editarNumero").value || null,
+                posicao: document.getElementById("editarPosicao").value
+            };
+
+            try {
+                const resposta = await fetch(`/api/jogadores/${jogadorEditando}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(jogador)
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    mensagem.textContent = resultado.erro || "Erro ao editar jogador.";
+                    return;
+                }
+
+                mensagem.textContent = resultado.mensagem || "Jogador atualizado com sucesso.";
+
+                secaoEdicao.hidden = true;
+                jogadorEditando = null;
+
+                await carregarJogadores();
+
+            } catch (erro) {
+                console.error(erro);
+                mensagem.textContent = "Erro de comunicação com o servidor.";
+            }
+        });
+
+        // ==========================================
+        // CANCELAR EDIÇÃO
+        // ==========================================
+
+        document.getElementById("cancelarEdicao").addEventListener("click", () => {
+            secaoEdicao.hidden = true;
+            jogadorEditando = null;
+            formEditarJogador.reset();
+        });
+
+        // ==========================================
+        // EXCLUIR JOGADOR
+        // ==========================================
+
+        async function excluirJogador(jogador) {
+            const confirmar = confirm(
+                `Tem certeza que deseja excluir ${jogador.nome}?`
+            );
+
+            if (!confirmar) return;
+
+            try {
+                const resposta = await fetch(`/api/jogadores/${jogador.id}`, {
+                    method: "DELETE"
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    mensagem.textContent = resultado.erro || "Erro ao excluir jogador.";
+                    return;
+                }
+
+                mensagem.textContent = resultado.mensagem || "Jogador excluído com sucesso.";
+
+                await carregarJogadores();
+
+            } catch (erro) {
+                console.error(erro);
+                mensagem.textContent = "Erro de comunicação com o servidor.";
+            }
+        }
+
+        // ==========================================
+        // EVENTOS
+        // ==========================================
+
+        selectLiga.addEventListener("change", carregarTimes);
+        selectTime.addEventListener("change", carregarJogadores);
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+
+        carregarLigas();
+
+    </script>
+
+</body>
+
+</html>
+```

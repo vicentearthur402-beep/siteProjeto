@@ -1,0 +1,301 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* CONFIGURAÇÕES GERAIS */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #10141b;
+    color: #f1f3f5;
+    min-height: 100vh;
+}
+
+/* CABEÇALHO */
+header {
+    background: #171d27;
+    border-bottom: 1px solid #303846;
+    padding: 22px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+header h1 {
+    font-size: 25px;
+    color: #ffffff;
+}
+
+header button {
+    background: #356de6;
+    color: white;
+    border: none;
+    padding: 10px 17px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+header button:hover {
+    background: #2858c5;
+}
+
+/* CONTEÚDO */
+main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 35px auto;
+}
+
+section {
+    background: #171d27;
+    border: 1px solid #303846;
+    border-radius: 9px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+/* SELEÇÃO DE LIGA E TIME */
+section label {
+    display: block;
+    margin: 12px 0 7px;
+    color: #b9c2cf;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* FORMULÁRIO */
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: end;
+}
+
+form label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    color: #b9c2cf;
+    font-size: 13px;
+    font-weight: bold;
+    flex: 1;
+    min-width: 160px;
+    margin: 0;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 11px;
+    background: #10141b;
+    border: 1px solid #3a4554;
+    border-radius: 5px;
+    color: white;
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    border-color: #356de6;
+}
+
+select option {
+    background: #171d27;
+    color: white;
+}
+
+/* BOTÕES */
+button {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+form button,
+section > button {
+    background: #356de6;
+    color: white;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+form button:hover,
+section > button:hover {
+    background: #2858c5;
+}
+
+/* TABELA DO ELENCO */
+section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+    background: #171d27;
+}
+
+section table thead {
+    background: #222c38;
+}
+
+section table th {
+    padding: 16px;
+    color: #6f9cff;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+    border-bottom: 1px solid #3a4655;
+}
+
+section table td {
+    padding: 15px 16px;
+    color: #dce2e9;
+    border-bottom: 1px solid #303846;
+    font-size: 14px;
+}
+
+section table tbody tr {
+    transition: background 0.2s ease;
+}
+
+section table tbody tr:nth-child(even) {
+    background: #1c2430;
+}
+
+section table tbody tr:hover {
+    background: #293747;
+}
+
+/* NÚMERO DA CAMISA */
+section table td:first-child {
+    width: 100px;
+    color: #6f9cff;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* NOME DO JOGADOR */
+section table td:nth-child(2) {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* POSIÇÃO */
+section table td:nth-child(3) {
+    color: #aebbc9;
+}
+
+/* MENSAGEM DE ELENCO VAZIO */
+section table td[colspan] {
+    text-align: center;
+    padding: 28px;
+    color: #8995a5;
+    font-weight: normal;
+}
+
+/* MENSAGENS */
+#mensagem,
+#mensagemJogadores {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #aeb7c4;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
+    header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    main {
+        width: 94%;
+        margin: 20px auto;
+    }
+
+    section {
+        padding: 17px;
+    }
+
+    form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    form label {
+        width: 100%;
+    }
+
+    section table th,
+    section table td {
+        padding: 12px 9px;
+        font-size: 12px;
+    }
+
+    section table td:first-child {
+        width: 65px;
+    }
+}
+
+
+/* BOTÕES DE AÇÕES DOS JOGADORES */
+
+.acoes-jogador {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-editar,
+.btn-excluir {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-editar {
+    background-color: #356de6;
+}
+
+.btn-editar:hover {
+    background-color: #2455bd;
+}
+
+.btn-excluir {
+    background-color: #b33c45;
+}
+
+.btn-excluir:hover {
+    background-color: #8e2932;
+}
+
+@media (max-width: 600px) {
+    .acoes-jogador {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .btn-editar,
+    .btn-excluir {
+        width: 100%;
+    }
+}

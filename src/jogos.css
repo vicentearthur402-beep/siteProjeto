@@ -1,4 +1,8 @@
 
+/* ========================================
+   CONFIGURAÇÕES GERAIS
+======================================== */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -14,7 +18,9 @@ body {
     transition: background 0.3s, color 0.3s;
 }
 
-/* CABEÇALHO */
+/* ========================================
+   CABEÇALHO
+======================================== */
 
 header {
     display: flex;
@@ -34,7 +40,9 @@ header h1 {
     font-size: 28px;
 }
 
-/* DASHBOARD */
+/* ========================================
+   DASHBOARD
+======================================== */
 
 #dashboard {
     display: grid;
@@ -64,6 +72,10 @@ header h1 {
     font-weight: bold;
 }
 
+/* ========================================
+   BOTÕES GERAIS
+======================================== */
+
 button {
     background: #356de6;
     color: white;
@@ -79,7 +91,9 @@ button:hover {
     background: #285acb;
 }
 
-/* CONTEÚDO PRINCIPAL */
+/* ========================================
+   CONTEÚDO PRINCIPAL
+======================================== */
 
 main {
     display: grid;
@@ -103,7 +117,9 @@ section > h2 {
     margin-bottom: 22px;
 }
 
-/* CALENDÁRIO */
+/* ========================================
+   CALENDÁRIO
+======================================== */
 
 #gerarPartidas {
     margin-bottom: 25px;
@@ -129,7 +145,9 @@ section > h2 {
     margin-bottom: 15px;
 }
 
-/* PARTIDAS */
+/* ========================================
+   PARTIDAS
+======================================== */
 
 .partida {
     display: grid;
@@ -164,10 +182,10 @@ section > h2 {
     color: #e5e7eb;
     text-align: center;
     font-size: 15px;
-    outline: none;
 }
 
 .partida input:focus {
+    outline: none;
     border-color: #5685ee;
 }
 
@@ -175,7 +193,9 @@ section > h2 {
     margin-top: 20px;
 }
 
-/* CLASSIFICAÇÃO */
+/* ========================================
+   CLASSIFICAÇÃO
+======================================== */
 
 table {
     width: 100%;
@@ -184,7 +204,8 @@ table {
     text-align: center;
 }
 
-th, td {
+th,
+td {
     padding: 13px 10px;
     border-bottom: 1px solid #292e3a;
     white-space: nowrap;
@@ -209,7 +230,148 @@ tbody tr:hover {
     background: #202431;
 }
 
-/* TEMA CLARO */
+/* ========================================
+   ÁREA DE ESTATÍSTICAS
+======================================== */
+
+#areaEstatisticas {
+    margin-top: 30px;
+    padding: 25px;
+    background: #171a21;
+    border: 1px solid #303642;
+    border-radius: 10px;
+}
+
+#areaEstatisticas h2 {
+    margin-bottom: 20px;
+    color: #f1f3f5;
+    font-size: 22px;
+}
+
+#informacoesPartida {
+    padding: 18px;
+    margin-bottom: 22px;
+    background: #222833;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* ========================================
+   SEPARAÇÃO DAS ESTATÍSTICAS POR TIME
+======================================== */
+
+#listaEstatisticas {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.secao-time-estatisticas {
+    background: #10131b;
+    border: 1px solid #303846;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.secao-time-estatisticas h3 {
+    color: #6f9cff;
+    font-size: 20px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #303846;
+}
+
+/* ========================================
+   LINHAS DOS JOGADORES
+======================================== */
+
+.linha-estatistica {
+    display: grid;
+    grid-template-columns: minmax(140px, 1.5fr) repeat(4, minmax(85px, 1fr));
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #222833;
+    border: 1px solid #343c49;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.linha-estatistica:last-child {
+    margin-bottom: 0;
+}
+
+.linha-estatistica strong {
+    color: #f1f3f5;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.linha-estatistica label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    color: #aeb7c4;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.linha-estatistica input {
+    width: 100%;
+    min-width: 0;
+    padding: 9px;
+    background: #151922;
+    border: 1px solid #414b5a;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    outline: none;
+}
+
+.linha-estatistica input:focus {
+    border-color: #5685ee;
+}
+
+/* ========================================
+   BOTÕES DAS ESTATÍSTICAS
+======================================== */
+
+#salvarEstatisticas,
+#fecharEstatisticas {
+    margin-top: 20px;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#salvarEstatisticas {
+    background: #238b4e;
+    color: white;
+}
+
+#salvarEstatisticas:hover {
+    background: #2ba45d;
+}
+
+#fecharEstatisticas {
+    margin-left: 8px;
+    background: #343c49;
+    color: white;
+}
+
+#fecharEstatisticas:hover {
+    background: #465163;
+}
+
+/* ========================================
+   TEMA CLARO
+======================================== */
 
 body.light {
     background: #f0f2f5;
@@ -223,7 +385,8 @@ body.light section {
 }
 
 body.light header h1,
-body.light section > h2 {
+body.light section > h2,
+body.light #areaEstatisticas h2 {
     color: #202938;
 }
 
@@ -277,7 +440,50 @@ body.light tbody tr:hover {
     background: #eef2f7;
 }
 
-/* RESPONSIVIDADE */
+/* Estatísticas no tema claro */
+
+body.light #areaEstatisticas {
+    background: white;
+    border-color: #dce1e8;
+}
+
+body.light #informacoesPartida {
+    background: #f0f2f5;
+    color: #202938;
+}
+
+body.light .secao-time-estatisticas {
+    background: #f7f8fa;
+    border-color: #dce1e8;
+}
+
+body.light .secao-time-estatisticas h3 {
+    color: #356de6;
+    border-color: #dce1e8;
+}
+
+body.light .linha-estatistica {
+    background: white;
+    border-color: #dce1e8;
+}
+
+body.light .linha-estatistica strong {
+    color: #202938;
+}
+
+body.light .linha-estatistica label {
+    color: #64748b;
+}
+
+body.light .linha-estatistica input {
+    background: #f7f8fa;
+    border-color: #d1d5db;
+    color: #202938;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
 
 @media (max-width: 1100px) {
     main {
@@ -291,6 +497,16 @@ body.light tbody tr:hover {
 
     header button {
         order: 2;
+    }
+}
+
+@media (max-width: 750px) {
+    .linha-estatistica {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .linha-estatistica strong {
+        grid-column: 1 / -1;
     }
 }
 
@@ -331,6 +547,27 @@ body.light tbody tr:hover {
     }
 }
 
+@media (max-width: 420px) {
+    #areaEstatisticas {
+        padding: 15px;
+    }
+
+    .secao-time-estatisticas {
+        padding: 12px;
+    }
+
+    .linha-estatistica {
+        gap: 12px;
+        padding: 12px;
+    }
+
+    #salvarEstatisticas,
+    #fecharEstatisticas {
+        width: 100%;
+        margin: 8px 0 0;
+    }
+}
+
 @media (max-width: 380px) {
     #dashboard {
         grid-template-columns: 1fr 1fr;
@@ -343,5 +580,70 @@ body.light tbody tr:hover {
 
     .card-dashboard p {
         font-size: 22px;
+    }
+}
+
+/* ========================================
+   AJUSTES DE ALINHAMENTO DAS ESTATÍSTICAS
+======================================== */
+
+/* Centraliza o título e as informações da partida */
+#areaEstatisticas > h2 {
+    text-align: center;
+}
+
+#informacoesPartida {
+    width: 100%;
+    text-align: center;
+}
+
+/* Centraliza os cartões dos times */
+.secao-time-estatisticas {
+    width: 100%;
+    text-align: center;
+}
+
+/* Organiza os campos sem ultrapassar a seção */
+.linha-estatistica {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+}
+
+/* Nome do jogador ocupa toda a primeira linha */
+.linha-estatistica strong {
+    grid-column: 1 / -1;
+    text-align: center;
+    min-width: 0;
+}
+
+/* Campos de estatísticas */
+.linha-estatistica label {
+    min-width: 0;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+}
+
+.linha-estatistica input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Evita que os cartões ultrapassem a tela */
+#areaEstatisticas,
+#listaEstatisticas,
+.secao-time-estatisticas {
+    min-width: 0;
+    max-width: 100%;
+}
+
+@media (max-width: 550px) {
+    .linha-estatistica {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
